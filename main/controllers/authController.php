@@ -276,8 +276,17 @@ function getProfileDetails()
         $_SESSION['email'] = $user['email'];
         $_SESSION['first_name'] = $user['first_name'];
         $_SESSION['last_name'] = $user['last_name'];
-        $_SESSION['university'] = $user['university'];
-        $_SESSION['subject'] = $user['subject'];
+        $_SESSION['index_number'] = $user['index_number'];
+        $_SESSION['eiin'] = $user['eiin'];
+        $_SESSION['post'] = $user['post'];
+        $_SESSION['ambassador'] = $user['ambassador'];
+        $_SESSION['ambassador_file'] = $user['ambassador_file'];
+        $_SESSION['contentuploader'] = $user['contentuploader'];
+        $_SESSION['contentuploader_file'] = $user['contentuploader_file'];
+        $_SESSION['banbeistraining'] = $user['banbeistraining'];
+        $_SESSION['banbeistraining_file'] = $user['banbeistraining_file'];
+        $_SESSION['attestation'] = $user['attestation'];
+        $_SESSION['attestation_file'] = $user['attestation_file'];
         $_SESSION['verified'] = $user['verified'];
         $_SESSION['type'] = 'alert-success';
     }
@@ -439,20 +448,42 @@ if (isset($_POST['login-btn'])) {
 
 //profile
 // LOGIN
-
+function fileUpload(){
+    $returnArr =[];
+    $fileNames= ['ambassador_file', 'contentuploader_file', 'banbeistraining_file', 'attestation_file'];
+    for($i=0;$i<sizeof($fileNames);$i++){
+        if ($_FILES[$fileNames[$i]]['name'] !='') {
+            $path_parts = pathinfo($_FILES[$fileNames[$i]]["name"]);
+            $fileName =  $_SESSION['id'] . rand() . $fileNames[$i]. '.pdf';
+            move_uploaded_file($_FILES[$fileNames[$i]]['tmp_name'], '../upload/' . $fileName);
+            array_push($returnArr, $fileName);
+        }else{
+            array_push($returnArr,'');
+        }
+    }
+    return $returnArr;
+}
 
 // submit update profile
 if (isset($_POST['update_profile_btn'])) {
-
     if (count($errors) === 0) {
-        $query = "update users set mobile=?, district=?, upazila=? where id=?";
+        fileUpload();
+        $query = "update users set mobile=? where id=?";
         $stmt = $conn->prepare($query);
-        $stmt->bind_param('ssii', $_POST['mobile'], $_POST['district'], $_POST['upazila'], $_SESSION['id']);
+        $stmt->bind_param('si', $_POST['mobile'], $_SESSION['id']);
 
         if ($stmt->execute()) {
-            $query1 = "update user_academic_info set first_name=?, last_name=?, university=?, subject=? where user_id=?";
+            $query1 = "update user_academic_info set first_name=?, last_name=?, eiin=?, index_number=?, post=?, ambassador=?, contentuploader=?, banbeistraining=?, attestation=? where user_id=?";
             $stmt1 = $conn->prepare($query1);
-            $stmt1->bind_param('ssiii', $_POST['first_name'], $_POST['last_name'], $_POST['university'], $_POST['subject'], $_SESSION['id']);
+            $stmt1->bind_param('ssiisssssi', $_POST['first_name'], $_POST['last_name'],
+                $_POST['eiin'],
+                $_POST['index_number'],
+                $_POST['post'],
+                $_POST['ambassador'],
+                $_POST['contentuploader'],
+                $_POST['banbeistraining'],
+                $_POST['attestation'],
+                $_SESSION['id']);
 
             if ($stmt1->execute()) {
                 $_SESSION['message'] = "Profile updated successfully!";

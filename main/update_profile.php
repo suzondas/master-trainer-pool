@@ -30,7 +30,7 @@ if (empty($_SESSION['id'])) {
 <h2 align="center">Update Your Profile</h2>
 <hr>
 <div class="container" style="padding:20px;background-color: aliceblue;">
-    <form action="update_profile.php" method="post">
+    <form action="update_profile.php" method="post"  enctype="multipart/form-data">
         <div class="row">
             <div class="col-md-6">
                 <b>First Name:</b>
@@ -64,8 +64,8 @@ if (empty($_SESSION['id'])) {
                 <br>
                 <b>Your Index No:</b> <br>
 
-                <input class="form-control" type="text" placeholder="Index Number" name="index"
-                       value="">
+                <input class="form-control" type="number" placeholder="Index Number" name="index_number"
+                       value="<?= $_SESSION['index_number'] ?>">
 
                 <br><br>
             </div>
@@ -116,7 +116,7 @@ if (empty($_SESSION['id'])) {
                     <br>
                     <label for="district">Your Post</label>
                     <input type="text"  id="post" name="post"
-                           class="form-control">
+                           class="form-control" value="<?= $_SESSION['post'] ?>">
                     <br>
                     <br>
                     <br>
@@ -124,54 +124,56 @@ if (empty($_SESSION['id'])) {
             </div>
             <div class="col-md-6" style="background: beige;">
                 <br>
+                Upload files in PDF format
                 <hr>
                 <div class="row">
-                <div class="col-md-1">
-                    <input class="" type="checkbox"/>
-                </div>
-                <div class="col-md-6">
-                    Selected as District ICT Ambassador
-                </div>
-                <div class="col-md-4">
-                    <input type="file"/>
-                </div>
-                </div>
-                <br>
-                <div class="row">
                     <div class="col-md-1">
-                        <input class="" type="checkbox"/>
-                    </div>
-                    <div class="col-md-6">
-                        Selected as best content uploader in Shikkhok Batayan
-                    </div>
-                    <div class="col-md-4">
-                        <input type="file"/>
-                    </div>
-                </div>
-                <br>
-                <div class="row">
-                    <div class="col-md-1">
-                        <input class="" type="checkbox"/>
-                    </div>
-                    <div class="col-md-6">
-                        Participated in Trainig from BANBEIS
-                    </div>
-                    <div class="col-md-4">
-                        <input type="file"/>
-                    </div>
-                </div>
-                <br>
-                <div class="row">
-                    <div class="col-md-1">
-                        <input class="" type="checkbox"/>
+                        <input class="" value="1" name="attestation" type="checkbox"  <?= $_SESSION['attestation']?'checked':'' ?>/>
                     </div>
                     <div class="col-md-6">
                         Attestation of Institution Head
                     </div>
                     <div class="col-md-4">
-                        <input type="file"/>
+                        <input type="file" name="attestation_file"/>
+                    </div>
+                </div>                <br>
+
+                <div class="row">
+                <div class="col-md-1">
+                    <input class="" value="1" name="ambassador" type="checkbox" <?= $_SESSION['ambassador']?'checked':'' ?>/>
+                </div>
+                <div class="col-md-6">
+                    Selected as District ICT Ambassador
+                </div>
+                <div class="col-md-4">
+                    <input type="file"  name="ambassador_file"/>
+                </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-1">
+                        <input class="" value="1" name="contentuploader" type="checkbox" <?= $_SESSION['contentuploader']?'checked':'' ?>/>
+                    </div>
+                    <div class="col-md-6">
+                        Selected as best content uploader in Shikkhok Batayan
+                    </div>
+                    <div class="col-md-4">
+                        <input type="file" name="contentuploader_file"/>
                     </div>
                 </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-1">
+                        <input class="" value="1" name="banbeistraining" type="checkbox" <?= $_SESSION['banbeistraining']?'checked':'' ?>/>
+                    </div>
+                    <div class="col-md-6">
+                        Participated in Training from BANBEIS
+                    </div>
+                    <div class="col-md-4">
+                        <input type="file" name="banbeistraining_file"/>
+                    </div>
+                </div>
+
             </div>
 
             <br>
