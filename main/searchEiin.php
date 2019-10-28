@@ -1,7 +1,7 @@
 <?php
 header('Content-Type: application/json; charset=UTF-8');
 echo
-curlPost('http://163.47.156.102/inhouse-training/services/searchEiin.php', [
+curlPost('http://192.168.245.36/inhouse-training/services/searchEiin.php', [
     'eiin' => $_POST['eiin']
 ]);
 

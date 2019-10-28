@@ -257,6 +257,17 @@ function getAvailableBook()
 
 function getProfileDetails()
 {
+    $fname =0;
+    $lname =0;
+    $photo =0;
+    $mobile=0;
+    $index =0;
+    $eiin =0;
+    $attestation =0;
+    $designation =0;
+    $course =0;
+    $email =0;
+
     global $conn;
     $query = "SELECT * FROM users i, user_academic_info j WHERE i.id=? and j.user_id=? LIMIT 1";
     $stmt = $conn->prepare($query);
@@ -264,6 +275,8 @@ function getProfileDetails()
     if ($stmt->execute()) {
         $result = $stmt->get_result();
         $user = $result->fetch_assoc();
+        /*profile percentage*/
+        /*profile percentage*/
         $_SESSION['username'] = $user['username'];
         $_SESSION['district'] = $user['district'];
         $_SESSION['upazila'] = $user['upazila'];
@@ -279,12 +292,17 @@ function getProfileDetails()
         $_SESSION['index_number'] = $user['index_number'];
         $_SESSION['eiin'] = $user['eiin'];
         $_SESSION['post'] = $user['post'];
+        $_SESSION['photo'] = $user['photo'];
         $_SESSION['ambassador'] = $user['ambassador'];
         $_SESSION['ambassador_file'] = $user['ambassador_file'];
         $_SESSION['contentuploader'] = $user['contentuploader'];
         $_SESSION['contentuploader_file'] = $user['contentuploader_file'];
         $_SESSION['banbeistraining'] = $user['banbeistraining'];
         $_SESSION['banbeistraining_file'] = $user['banbeistraining_file'];
+        $_SESSION['icteducation'] = $user['icteducation'];
+        $_SESSION['icteducation_file'] = $user['icteducation_file'];
+        $_SESSION['bcctraining'] = $user['bcctraining'];
+        $_SESSION['bcctraining_file'] = $user['bcctraining_file'];
         $_SESSION['attestation'] = $user['attestation'];
         $_SESSION['attestation_file'] = $user['attestation_file'];
         $_SESSION['verified'] = $user['verified'];
@@ -307,6 +325,65 @@ function removePublishedBook($id)
     }
 }
 
+/*admin view user*/
+
+function getUserProfileDetails()
+{
+    $userId = $_GET['userid'];
+    $fname =0;
+    $lname =0;
+    $photo =0;
+    $mobile=0;
+    $index =0;
+    $eiin =0;
+    $attestation =0;
+    $designation =0;
+    $course =0;
+    $email =0;
+
+    global $conn;
+    $query = "SELECT * FROM users i, user_academic_info j WHERE i.id=? and j.user_id=? LIMIT 1";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param('ii', $userId, $userId);
+    if ($stmt->execute()) {
+        $result = $stmt->get_result();
+        $user = $result->fetch_assoc();
+        /*profile percentage*/
+        /*profile percentage*/
+        $userData =[];
+        $userData['username'] = $user['username'];
+        $userData['district'] = $user['district'];
+        $userData['upazila'] = $user['upazila'];
+        if ($user['course'] == 1) {
+            $userData['course'] = "Computer Basic and Office Productivity";
+        } else {
+            $userData['course'] = "Computer Hardware, Troubleshooting and Maintenance";
+        }
+        $userData['mobile'] = $user['mobile'];
+        $userData['email'] = $user['email'];
+        $userData['first_name'] = $user['first_name'];
+        $userData['last_name'] = $user['last_name'];
+        $userData['index_number'] = $user['index_number'];
+        $userData['eiin'] = $user['eiin'];
+        $userData['post'] = $user['post'];
+        $userData['photo'] = $user['photo'];
+        $userData['ambassador'] = $user['ambassador'];
+        $userData['ambassador_file'] = $user['ambassador_file'];
+        $userData['contentuploader'] = $user['contentuploader'];
+        $userData['contentuploader_file'] = $user['contentuploader_file'];
+        $userData['banbeistraining'] = $user['banbeistraining'];
+        $userData['banbeistraining_file'] = $user['banbeistraining_file'];
+        $userData['icteducation'] = $user['icteducation'];
+        $userData['icteducation_file'] = $user['icteducation_file'];
+        $userData['bcctraining'] = $user['bcctraining'];
+        $userData['bcctraining_file'] = $user['bcctraining_file'];
+        $userData['attestation'] = $user['attestation'];
+        $userData['attestation_file'] = $user['attestation_file'];
+        $userData['verified'] = $user['verified'];
+        $userData['type'] = 'alert-success';
+    }
+}
+/*admin view user*/
 /*Remove Published Book*/
 
 function cancelRequestedBook($id)
@@ -434,7 +511,11 @@ if (isset($_POST['login-btn'])) {
                 $_SESSION['email'] = $user['email'];
                 $_SESSION['verified'] = $user['verified'];
                 $_SESSION['type'] = 'alert-success';
-                header('location: index.php');
+                if($user['username']=='admin'){
+                    header('location: mtpooladmin/dashboard.php');
+                }else{
+                    header('location: index.php');
+                }
                 exit(0);
             } else { // if password does not match
                 $errors['login_fail'] = "Wrong username / password";
@@ -448,17 +529,23 @@ if (isset($_POST['login-btn'])) {
 
 //profile
 // LOGIN
-function fileUpload(){
-    $returnArr =[];
-    $fileNames= ['ambassador_file', 'contentuploader_file', 'banbeistraining_file', 'attestation_file'];
-    for($i=0;$i<sizeof($fileNames);$i++){
-        if ($_FILES[$fileNames[$i]]['name'] !='') {
+function fileUpload($user)
+{
+//    var_dump($user);exit;
+    $returnArr = [];
+    $fileNames = ['photo', 'ambassador_file', 'contentuploader_file', 'banbeistraining_file', 'bcctraining_file', 'attestation_file', 'icteducation_file'];
+    for ($i = 0; $i < sizeof($fileNames); $i++) {
+        if ($_FILES[$fileNames[$i]]['name'] != '') {
             $path_parts = pathinfo($_FILES[$fileNames[$i]]["name"]);
-            $fileName =  $_SESSION['id'] . rand() . $fileNames[$i]. '.pdf';
+            if ($fileNames[$i] == 'photo') {
+                $fileName = $_SESSION['id'] . rand() . $fileNames[$i] . '.jpg';
+            } else {
+                $fileName = $_SESSION['id'] . rand() . $fileNames[$i] . '.pdf';
+            }
             move_uploaded_file($_FILES[$fileNames[$i]]['tmp_name'], '../upload/' . $fileName);
             array_push($returnArr, $fileName);
-        }else{
-            array_push($returnArr,'');
+        } else {
+            array_push($returnArr, $user[$fileNames[$i]]);
         }
     }
     return $returnArr;
@@ -467,37 +554,74 @@ function fileUpload(){
 // submit update profile
 if (isset($_POST['update_profile_btn'])) {
     if (count($errors) === 0) {
-        fileUpload();
-        $query = "update users set mobile=? where id=?";
+        $query = "SELECT * FROM user_academic_info WHERE user_id=? LIMIT 1";
         $stmt = $conn->prepare($query);
-        $stmt->bind_param('si', $_POST['mobile'], $_SESSION['id']);
+        $stmt->bind_param('i', $_SESSION['id']);
 
         if ($stmt->execute()) {
-            $query1 = "update user_academic_info set first_name=?, last_name=?, eiin=?, index_number=?, post=?, ambassador=?, contentuploader=?, banbeistraining=?, attestation=? where user_id=?";
-            $stmt1 = $conn->prepare($query1);
-            $stmt1->bind_param('ssiisssssi', $_POST['first_name'], $_POST['last_name'],
-                $_POST['eiin'],
-                $_POST['index_number'],
-                $_POST['post'],
-                $_POST['ambassador'],
-                $_POST['contentuploader'],
-                $_POST['banbeistraining'],
-                $_POST['attestation'],
-                $_SESSION['id']);
+            $result = $stmt->get_result();
+            $user = $result->fetch_assoc();
 
-            if ($stmt1->execute()) {
-                $_SESSION['message'] = "Profile updated successfully!";
-                $_SESSION['type'] = "alert-success";
-                header('location: dashboard.php');
-                exit(0);
+            $arrOfFile = fileUpload($user);
+            $query = "update users set mobile=? where id=?";
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param('si', $_POST['mobile'], $_SESSION['id']);
 
+            if ($stmt->execute()) {
+                $query1 = "update user_academic_info set 
+                        first_name=?, 
+                        last_name=?, 
+                        eiin=?, 
+                        index_number=?, 
+                        post=?, 
+                        ambassador=?, 
+                        contentuploader=?, 
+                        banbeistraining=?, 
+                        bcctraining=?, 
+                        attestation=?, 
+                        icteducation=?,
+                        photo=?,
+                        ambassador_file=?,
+                        contentuploader_file=?,
+                        banbeistraining_file=?,
+                        bcctraining_file=?,
+                        attestation_file=?,
+                        icteducation_file=?
+                        where user_id=?";
+                $stmt1 = $conn->prepare($query1);
+                $stmt1->bind_param('ssiissssssssssssssi', $_POST['first_name'], $_POST['last_name'],
+                    $_POST['eiin'],
+                    $_POST['index_number'],
+                    $_POST['post'],
+                    $_POST['ambassador'],
+                    $_POST['contentuploader'],
+                    $_POST['banbeistraining'],
+                    $_POST['bcctraining'],
+                    $_POST['attestation'],
+                    $_POST['icteducation'],
+                    $arrOfFile[0],
+                    $arrOfFile[1],
+                    $arrOfFile[2],
+                    $arrOfFile[3],
+                    $arrOfFile[4],
+                    $arrOfFile[5],
+                    $arrOfFile[6],
+                    $_SESSION['id']);
+
+                if ($stmt1->execute()) {
+                    $_SESSION['message'] = "Profile updated successfully!";
+                    $_SESSION['type'] = "alert-success";
+                    header('location: dashboard.php');
+                    exit(0);
+
+                } else {
+                    $_SESSION['message'] = "Database error. Login failed!";
+                    $_SESSION['type'] = "alert-danger";
+                }
             } else {
                 $_SESSION['message'] = "Database error. Login failed!";
                 $_SESSION['type'] = "alert-danger";
             }
-        } else {
-            $_SESSION['message'] = "Database error. Login failed!";
-            $_SESSION['type'] = "alert-danger";
         }
     }
 }

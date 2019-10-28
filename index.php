@@ -1,6 +1,5 @@
 <?php include "view/layout/header.php";?>
 <div class="site-wrap">
-
     <div class="site-mobile-menu site-navbar-target">
         <div class="site-mobile-menu-header">
             <div class="site-mobile-menu-close mt-3">
@@ -9,7 +8,6 @@
         </div>
         <div class="site-mobile-menu-body"></div>
     </div>
-
 
     <header class="site-navbar py-4 js-sticky-header site-navbar-target" style="padding-top:0px !important;" role="banner">
 
@@ -26,6 +24,7 @@
                         <ul class="site-menu main-menu js-clone-nav mx-auto d-none d-lg-block  m-0 p-0">
                             <li><a style="color:black" href="#home-section" class="nav-link">Home</a></li>
                             <li><a style="color:black" href="#programs-section" class="nav-link">About This Innovation</a></li>
+                            <li style="background:grey"><a target="_blank" href="src/images/guidelines.pdf"  style="color:#ffe000;" class="nav-link blink-me"><span><b>Instructions</b></span></a></li>
                             <li><a style="color:black" href="#contact-section" class="nav-link">Contact Us</a></li>
                         </ul>
                     </nav>
@@ -34,6 +33,7 @@
                 <div class="ml-auto w-25">
                     <nav class="site-navigation position-relative text-right" role="navigation">
                         <ul class="site-menu main-menu site-menu-dark js-clone-nav mr-auto d-none d-lg-block m-0 p-0">
+                            <li class=""><a href="main/signup.php"  style="color:red;" class="nav-link"><span><b>Registration</b></span></a></li>
                             <li class=""><a href="main/login.php" class="nav-link"><span><b>Login</b></span></a></li>
                         </ul>
                     </nav>
