@@ -2,10 +2,10 @@
 session_start();
 
 
-$servername = "localhost";
-$username = "root";
-$password = "";
-$db = "book_share";
+$servername = "192.254.190.210";
+$username = "banbeis";
+$password = "hm*Fnw#N4L";
+$db = "banbeis_mtpool";
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $db);

@@ -1,9 +1,14 @@
 <?php 
 // DB credentials.
-define('DB_HOST','localhost');
-define('DB_USER','root');
-define('DB_PASS','');
-define('DB_NAME','book_share');
+define('DB_HOST','192.254.190.210');
+define('DB_USER','banbeis');
+define('DB_PASS','hm*Fnw#N4L');
+define('DB_NAME','banbeis_mtpool');
+
+//$servername = "192.254.190.210";
+//$username = "banbeis";
+//$password = "hm*Fnw#N4L";
+//$db = "banbeis_mtpool";
 // Establish database connection.
 try
 {
